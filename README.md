@@ -32,14 +32,9 @@ def main():
     category_choice = input("Enter the number corresponding to your desired category: ")
 
   
-    if category_choice == '1':
-        search_vegetables()
-    elif category_choice == '2':
-        search_fruits()
-    elif category_choice == '3':
-        search_dairy_products()
-    elif category_choice == '4':
-        search_meat_and_poultry()
+    if category_choice in ['1', '2', '3', '4']:
+        category_mapping = {'1': 'vegetables', '2': 'fruits', '3': 'dairy_products','4': 'meat_and_poultry'}
+        search_items(items_in_store, category_mapping[category_choice])
     else:
         print("Invalid choice. Please select a valid category.")
 
