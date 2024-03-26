@@ -50,7 +50,8 @@ def search_items(items_data, category):
     print(f"You selected {category.capitalize()}.")
     query = input(f"What are you looking for in {category.capitalize()}? ")
 
-    # Implement search logic for the specified category based on user's query
+    if query.lower() == 'quit':
+        return
     found_items = []
     for item in items_data.get(category, []):
         if query.lower() in item['name'].lower():
