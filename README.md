@@ -1,4 +1,11 @@
-
+def read_item_data(filename):
+    items_data = {}
+    with open(filename, 'r') as file:
+        for line in file:
+            category, name, quantity, price = line.strip().split(',')
+            item = {'name': name, 'quantity': int(quantity), 'price': float(price)}
+            items_data.setdefault(category, []).append(item)
+    return items_data
 def main():
     items_in_store = read_item_data('items_data.txt')
     print("Welcome to the Shopping Tool!")
