@@ -61,7 +61,7 @@ def main():
 
     root.mainloop()
 # Function to create a search window for a specific category
-def show_search_window(category, items_data):
+def show_search_window(category, items_data): 
     search_window = tk.Toplevel()
     search_window.title(f"Search {category.capitalize()}")
 
