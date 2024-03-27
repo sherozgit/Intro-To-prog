@@ -1,0 +1,12 @@
+vegetables,Carrot,100,0.75
+vegetables,Tomato,80,1.00
+vegetables,Spinach,60,1.20
+fruits,Apple,120,0.80
+fruits,Banana,150,0.60
+fruits,Orange,100,0.75
+dairy products,Milk,50,2.00
+dairy products,Cheese,40,3.50
+dairy products,Yogurt,60,1.20
+meat and poultry,Chicken,30,5.00
+meat and poultry,Beef,20,7.50
+meat and poultry,Pork,25,6.50
