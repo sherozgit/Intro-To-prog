@@ -1,16 +1,19 @@
 import tkinter as tk
 
-# Function to read item data from a file and store it in a dictionary
+# Function to read item data from a file and store it in a nested dictionary
 def read_item_data(filename):
     items_data = {}
     with open(filename, 'r') as file:
         for line in file:
             # Splitting each line of the file into category, name, quantity, and price
             category, name, quantity, price = line.strip().split(',')
-            # Creating a dictionary for each item with name, quantity, and price
-            item = {'name': name, 'quantity': int(quantity), 'price': float(price)}
-            # Storing items in a dictionary with categories as keys
-            items_data.setdefault(category, []).append(item)
+            # Creating a nested dictionary to store item details
+            item = {'quantity': int(quantity), 'price': float(price)}
+            # Check if the category already exists in items_data
+            if category in items_data:
+                items_data[category][name] = item
+            else:
+                items_data[category] = {name: item}
     return items_data
 
 # Function to search for items within a category based on a query
@@ -22,16 +25,16 @@ def search_items(items_data, category, query):
     # List to store found items
     found_items = []
     # Iterating through items in the specified category
-    for item in items_data.get(category, []):
+    for item_name, item_details in items_data.get(category, {}).items():
         # Checking if the query string matches any part of the item name (case insensitive)
-        if query.lower() in item['name'].lower():
-            found_items.append(item)
+        if query.lower() in item_name.lower():
+            found_items.append((item_name, item_details))
 
     # Displaying search results
     if found_items:
-        for i, item in enumerate(found_items):
+        for i, (item_name, item_details) in enumerate(found_items):
             # Displaying item details (name, quantity, price) in labels
-            tk.Label(result_window, text=f"Name: {item['name']}, Quantity: {item['quantity']}, Price: ${item['price']:.2f}").grid(row=i, column=0)
+            tk.Label(result_window, text=f"Name: {item_name}, Quantity: {item_details['quantity']}, Price: ${item_details['price']:.2f}").grid(row=i, column=0)
     else:
         # Displaying a message if no items match the query
         tk.Label(result_window, text=f"No items matching '{query}' found in {category.capitalize()}.").grid(row=0, column=0)
@@ -44,9 +47,10 @@ def main():
     # Create main window
     root = tk.Tk()
     root.title("Supermarket")
+    root.configure(bg='lightgray')
 
     # Create category selection frame
-    category_frame = tk.Frame(root)
+    category_frame = tk.Frame(root, bg='lightgray')  # Specify background color for the frame
     category_frame.grid(row=0, column=0, padx=10, pady=10)
 
     # Label for category selection
@@ -56,10 +60,13 @@ def main():
     categories = ['Vegetables', 'Fruits', 'Dairy Products', 'Meat and Poultry']
     # Creating buttons for each category
     for i, category in enumerate(categories, start=1):
-        tk.Button(category_frame, text=category, command=lambda cat=category: show_search_window(cat, items_in_store)).grid(row=i, column=0, pady=5)
+        btn = tk.Button(category_frame, text=category, bg='skyblue', fg='white', font=('Arial', 10), padx=10, pady=5,
+                        command=lambda cat=category: show_search_window(cat, items_in_store))  # Pass items_in_store
+        btn.grid(row=i, column=0, pady=5)
 
-    # Button to quit the application
-    tk.Button(category_frame, text="Quit", command=root.quit).grid(row=len(categories)+1, column=0, pady=5)
+    quit_btn = tk.Button(category_frame, text="Quit", bg='red', fg='white', font=('Arial', 10), padx=10, pady=5,
+                         command=root.quit)
+    quit_btn.grid(row=len(categories)+1, column=0, pady=5)
 
     root.mainloop()
 
