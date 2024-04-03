@@ -66,8 +66,33 @@ def buy_item(name, details):
 # Function to handle paying for the selected items
 def pay():
     total_amount = sum(item[1]['price'] for item in selected_items)
-    print(f"Total amount to pay: ${total_amount:.2f}")
 
+    # Create a new window for payment form
+    payment_window = tk.Toplevel()
+    payment_window.title("Payment")
+    
+    # Labels and entry widgets for card number and expiry date
+    tk.Label(payment_window, text="Card Number:").grid(row=0, column=0, padx=10, pady=5)
+    card_number_entry = tk.Entry(payment_window)
+    card_number_entry.grid(row=0, column=1, padx=10, pady=5)
+    
+    tk.Label(payment_window, text="Expiry Date (MM/YY):").grid(row=1, column=0, padx=10, pady=5)
+    expiry_date_entry = tk.Entry(payment_window)
+    expiry_date_entry.grid(row=1, column=1, padx=10, pady=5)
+    
+    # Function to process payment
+    def process_payment():
+        card_number = card_number_entry.get()
+        expiry_date = expiry_date_entry.get()
+        # You can add further validation here if needed
+        # For demonstration purposes, just show a message
+        tk.messagebox.showinfo("Payment", f"Payment successful. Thank you for shopping! Total amount: ${total_amount:.2f}")
+        # Close the payment window after successful payment
+        payment_window.destroy()
+
+    # Button to confirm payment
+    confirm_btn = tk.Button(payment_window, text="Confirm Payment", command=process_payment)
+    confirm_btn.grid(row=2, columnspan=2, padx=10, pady=10)
 # Main function to create the main window and handle user interaction
 def main():
     # Read item data from file
