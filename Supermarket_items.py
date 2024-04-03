@@ -71,6 +71,9 @@ def pay():
     # Create a new window for payment form
     payment_window = tk.Toplevel()
     payment_window.title("Payment")
+
+    # Display total amount in payment window
+    tk.Label(payment_window, text=f"Total Amount: ${total_amount:.2f}").grid(row=3, column = 0, padx=10, pady=5)
     
     # This takes card Number that is  16 digit number
     tk.Label(payment_window, text="Card Number:").grid(row=0, column=0, padx=10, pady=5)
@@ -91,6 +94,11 @@ def pay():
         card_number = card_number_entry.get()
         expiry_date = expiry_date_entry.get()
         security_code = security_code_entry.get()
+        # Check if the user has selected at least one item for purchase
+        if not selected_items:
+            tk.messagebox.showerror("Error", "No items selected for purchase.")
+            return
+        
 
         # Check if the card number is a 16-digit number
         if not card_number.isdigit() or len(card_number) != 16:
@@ -99,7 +107,7 @@ def pay():
     
         # Check if the expiry date is valid and not expired
         # Assuming the expiry date is in MM/YY format
-        if len(expiry_date) != 5 or not expiry_date[:2].isdigit() or not expiry_date[3:].isdigit():
+        if len(expiry_date) != 5 and not expiry_date[:2].isdigit() and not expiry_date[3:].isdigit():
             tk.messagebox.showerror("Error", "Invalid expiry date format. Please enter MM/YY.")
             return
         # Extract month and year from expiry date
@@ -108,11 +116,16 @@ def pay():
         if not (1 <= expiry_month <= 12):
             tk.messagebox.showerror("Error", "Invalid month. Please enter a month between 01 and 12.")
             return
+        # Extract month and year from expiry date
+        expiry_month, expiry_year = int(expiry_date[:2]), int(expiry_date[3:])
         # Get current date
         current_date = datetime.datetime.now()
+        current_year = current_date.year
+        current_month = current_date.month
         
         # Check if the card has expired
-        if expiry_year > current_date.year and (expiry_year == current_date.year and expiry_month > current_date.month):
+        
+        if expiry_year > current_year and  expiry_month > current_month:
             tk.messagebox.showerror("Error", "Card has expired. Please use a valid card.")
             return
 
@@ -128,7 +141,7 @@ def pay():
 
     # Button to confirm payment
     confirm_btn = tk.Button(payment_window, text="Confirm Payment", command=process_payment)
-    confirm_btn.grid(row=3, columnspan=2, padx=10, pady=10)
+    confirm_btn.grid(row=4, columnspan=2, padx=10, pady=10)
 # Main function to create the main window and handle user interaction
 def main():
     # Read item data from file
@@ -138,7 +151,7 @@ def main():
     root = tk.Tk()
     root.title("Supermarket")
     root.configure(bg='black')
-    root.geometry("200x400")
+    root.geometry("300x400")
 
     # Create category selection frame
     category_frame = tk.Frame(root, bg='lightgray',width=300)  # Specify background color for the frame
@@ -163,6 +176,15 @@ def main():
     pay_btn = tk.Button(root, text="Pay", bg='green', fg='white', font=('Arial', 15), padx=10, pady=5, command=pay)
     pay_btn.grid(row=1, column=0, pady=10)
 
+    # Center the category frame within the main window
+    root.grid_rowconfigure(0, weight=1)  # Allow row to expand
+    root.grid_columnconfigure(0, weight=1)  # Allow column to expand
+
+    category_frame.grid_rowconfigure(0, weight=1)  # Allow category frame row to expand
+    category_frame.grid_columnconfigure(0, weight=1)  # Allow category frame column to expand
+
+    
+
     root.mainloop()
 
 # Function to create a search window for a specific category
@@ -170,8 +192,17 @@ def show_search_window(category, items_data):
     search_window = tk.Toplevel()
     search_window.title(f"Search {category.capitalize()}")
 
+    # Set the size and position of the search window
+    window_width = 400
+    window_height = 300
+    screen_width = search_window.winfo_screenwidth()
+    screen_height = search_window.winfo_screenheight()
+    x_coordinate = (screen_width - window_width) // 2
+    y_coordinate = (screen_height - window_height) // 2
+    search_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
     # Label for query entry
-    tk.Label(search_window, text=f"What are you looking for in {category.capitalize()}?").grid(row=0, column=0)
+    tk.Label(search_window, text=f"What are you looking for in {category.capitalize()}?",font=('Arial')).grid(row=0, column=0)
     # Entry widget for user input
     query_entry = tk.Entry(search_window)
     query_entry.grid(row=0, column=1)
@@ -179,6 +210,7 @@ def show_search_window(category, items_data):
     # Button to initiate the search
     search_btn = tk.Button(search_window, text="Search", command=lambda: search_items(items_data, category.lower(), query_entry.get()))
     search_btn.grid(row=1, column=0, columnspan=2, pady=10)
+
 
 # Entry point of the program
 if __name__ == "__main__":
