@@ -1,7 +1,8 @@
 import tkinter as tk
-
-# Global variable to store the items selected by the user
+from tkinter import messagebox
+# Global variables to store the items selected by the user and their quantities
 selected_items = []
+item_counters = {}
 
 # Function to read item data from a file and store it in a nested dictionary
 def read_item_data(filename):
@@ -41,18 +42,30 @@ def search_items(items_data, category, query):
             # Button to buy the item
             buy_btn = tk.Button(result_window, text="Buy", command=lambda name=item_name, details=item_details: buy_item(name, details))
             buy_btn.grid(row=i, column=1)
+            # Counter label for quantity
+            counter_label = tk.Label(result_window, text="0")
+            counter_label.grid(row=i, column=2)
+            # Store the counter label in a dictionary with item name as key
+            item_counters[item_name] = counter_label
     else:
         # Displaying a message if no items match the query
         tk.Label(result_window, text=f"No items matching '{query}' found in {category.capitalize()}.").grid(row=0, column=0)
 
 # Function to handle buying items
 def buy_item(name, details):
-    selected_items.append((name, details))
-    print(f"{name} added to cart.")
+    available_quantity = details['quantity']
+    if available_quantity > 0:
+        selected_items.append((name, details))
+        # Decrement the available quantity and update the counter label
+        details['quantity'] -= 1
+        item_counters[name].config(text=str(int(item_counters[name].cget("text")) + 1))
+    else:
+        # Display a message if the item is out of stock
+        tk.messagebox.showinfo("Out of Stock", f"{name} is currently out of stock.")
 
 # Function to handle paying for the selected items
 def pay():
-    total_amount = sum(item['price'] for _, item in selected_items)
+    total_amount = sum(item[1]['price'] for item in selected_items)
     print(f"Total amount to pay: ${total_amount:.2f}")
 
 # Main function to create the main window and handle user interaction
@@ -63,10 +76,11 @@ def main():
     # Create main window
     root = tk.Tk()
     root.title("Supermarket")
-    root.configure(bg='lightgray')
+    root.configure(bg='black')
+    root.geometry("200x400")
 
     # Create category selection frame
-    category_frame = tk.Frame(root, bg='lightgray')  # Specify background color for the frame
+    category_frame = tk.Frame(root, bg='lightgray',width=300)  # Specify background color for the frame
     category_frame.grid(row=0, column=0, padx=10, pady=10)
 
     # Label for category selection
@@ -76,17 +90,17 @@ def main():
     categories = ['Vegetables', 'Fruits', 'Dairy Products', 'Meat and Poultry']
     # Creating buttons for each category
     for i, category in enumerate(categories, start=1):
-        btn = tk.Button(category_frame, text=category, bg='skyblue', fg='white', font=('Arial', 10), padx=10, pady=5,
+        btn = tk.Button(category_frame, text=category, bg='skyblue', fg='white', font=('Arial', 10), padx=20, pady=5,
                         command=lambda cat=category: show_search_window(cat, items_in_store))  # Pass items_in_store
-        btn.grid(row=i, column=0, pady=5)
+        btn.grid(row=i, column=0, pady=10)
 
-    quit_btn = tk.Button(category_frame, text="Quit", bg='red', fg='white', font=('Arial', 10), padx=10, pady=5,
+    quit_btn = tk.Button(category_frame, text="Quit", bg='red', fg='white', font=('Arial', 13), padx=20, pady=5,
                          command=root.quit)
-    quit_btn.grid(row=len(categories)+1, column=0, pady=5)
+    quit_btn.grid(row=len(categories)+1, column=0, pady=10)
 
     # Button to pay for selected items
-    pay_btn = tk.Button(root, text="Pay", bg='green', fg='white', font=('Arial', 10), padx=10, pady=5, command=pay)
-    pay_btn.grid(row=1, column=0, pady=5)
+    pay_btn = tk.Button(root, text="Pay", bg='green', fg='white', font=('Arial', 15), padx=10, pady=5, command=pay)
+    pay_btn.grid(row=1, column=0, pady=10)
 
     root.mainloop()
 
@@ -103,7 +117,7 @@ def show_search_window(category, items_data):
 
     # Button to initiate the search
     search_btn = tk.Button(search_window, text="Search", command=lambda: search_items(items_data, category.lower(), query_entry.get()))
-    search_btn.grid(row=1, column=0, columnspan=2, pady=5)
+    search_btn.grid(row=1, column=0, columnspan=2, pady=10)
 
 # Entry point of the program
 if __name__ == "__main__":
