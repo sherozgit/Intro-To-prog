@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+import datetime
 # Global variables to store the items selected by the user and their quantities
 selected_items = []
 item_counters = {}
@@ -71,28 +72,63 @@ def pay():
     payment_window = tk.Toplevel()
     payment_window.title("Payment")
     
-    # Labels and entry widgets for card number and expiry date
+    # This takes card Number that is  16 digit number
     tk.Label(payment_window, text="Card Number:").grid(row=0, column=0, padx=10, pady=5)
     card_number_entry = tk.Entry(payment_window)
     card_number_entry.grid(row=0, column=1, padx=10, pady=5)
+
+    #This  takes secure code that is 3 digtt number 
+    tk.Label(payment_window, text="Security Code:").grid(row=1, column=0, padx=10, pady=5)
+    security_code_entry = tk.Entry(payment_window)
+    security_code_entry.grid(row=1, column=1, padx=10, pady=5)
     
-    tk.Label(payment_window, text="Expiry Date (MM/YY):").grid(row=1, column=0, padx=10, pady=5)
+    tk.Label(payment_window, text="Expiry Date (MM/YY):").grid(row=2, column=0, padx=10, pady=5)
     expiry_date_entry = tk.Entry(payment_window)
-    expiry_date_entry.grid(row=1, column=1, padx=10, pady=5)
+    expiry_date_entry.grid(row=2, column=1, padx=10, pady=5)
     
     # Function to process payment
     def process_payment():
         card_number = card_number_entry.get()
         expiry_date = expiry_date_entry.get()
-        # You can add further validation here if needed
-        # For demonstration purposes, just show a message
+        security_code = security_code_entry.get()
+
+        # Check if the card number is a 16-digit number
+        if not card_number.isdigit() or len(card_number) != 16:
+            tk.messagebox.showerror("Error", "Invalid card number. Please enter a 16-digit number.")
+            return
+    
+        # Check if the expiry date is valid and not expired
+        # Assuming the expiry date is in MM/YY format
+        if len(expiry_date) != 5 or not expiry_date[:2].isdigit() or not expiry_date[3:].isdigit():
+            tk.messagebox.showerror("Error", "Invalid expiry date format. Please enter MM/YY.")
+            return
+        # Extract month and year from expiry date
+        expiry_month, expiry_year = int(expiry_date[:2]), int(expiry_date[3:])
+        # Check if the month is within the valid range (1 to 12)
+        if not (1 <= expiry_month <= 12):
+            tk.messagebox.showerror("Error", "Invalid month. Please enter a month between 01 and 12.")
+            return
+        # Get current date
+        current_date = datetime.datetime.now()
+        
+        # Check if the card has expired
+        if expiry_year > current_date.year and (expiry_year == current_date.year and expiry_month > current_date.month):
+            tk.messagebox.showerror("Error", "Card has expired. Please use a valid card.")
+            return
+
+        # Check if the security code is a 3-digit number
+        if not security_code.isdigit() or len(security_code) != 3:
+            tk.messagebox.showerror("Error", "Invalid security code. Please enter a 3-digit number.")
+            return
+
+        # If all checks pass, show payment successful message
         tk.messagebox.showinfo("Payment", f"Payment successful. Thank you for shopping! Total amount: ${total_amount:.2f}")
         # Close the payment window after successful payment
         payment_window.destroy()
 
     # Button to confirm payment
     confirm_btn = tk.Button(payment_window, text="Confirm Payment", command=process_payment)
-    confirm_btn.grid(row=2, columnspan=2, padx=10, pady=10)
+    confirm_btn.grid(row=3, columnspan=2, padx=10, pady=10)
 # Main function to create the main window and handle user interaction
 def main():
     # Read item data from file
