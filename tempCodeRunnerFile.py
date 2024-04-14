@@ -1,1 +1,1 @@
-root.geometry("300x400")
+current_month = current_date.month

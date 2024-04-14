@@ -62,7 +62,7 @@ def buy_item(name, details):
         item_counters[name].config(text=str(int(item_counters[name].cget("text")) + 1))
     else:
         # Display a message if the item is out of stock
-        tk.messagebox.showinfo("Out of Stock", f"{name} is currently out of stock.")
+        messagebox.showinfo("Out of Stock", f"{name} is currently out of stock.")
 
 # Function to handle paying for the selected items
 def pay():
@@ -120,12 +120,18 @@ def pay():
         expiry_month, expiry_year = int(expiry_date[:2]), int(expiry_date[3:])
         # Get current date
         current_date = datetime.datetime.now()
+        print(current_date)
         current_year = current_date.year
-        current_month = current_date.month
+        current_date2 = datetime.datetime.now()
+        current_month = current_date2.month
+        
+        if expiry_month > current_month:
+            tk.messagebox.showerror("Error", "Card has expired.Maybe,month has been expired Please use a valid card.")
+            return
         
         # Check if the card has expired
         
-        if expiry_year > current_year and  expiry_month > current_month:
+        if expiry_year > current_year :
             tk.messagebox.showerror("Error", "Card has expired. Please use a valid card.")
             return
 
