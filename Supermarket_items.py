@@ -101,45 +101,30 @@ def pay():
         
 
         # Check if the card number is a 16-digit number
-        if not card_number.isdigit() or len(card_number) != 16:
+        if not card_number.isdigit() and len(card_number) != 16:
             tk.messagebox.showerror("Error", "Invalid card number. Please enter a 16-digit number.")
             return
     
         # Check if the expiry date is valid and not expired
         # Assuming the expiry date is in MM/YY format
-        if len(expiry_date) != 5 and not expiry_date[:2].isdigit() and not expiry_date[3:].isdigit():
-            tk.messagebox.showerror("Error", "Invalid expiry date format. Please enter MM/YY.")
-            return
-        # Extract month and year from expiry date
-        expiry_month, expiry_year = int(expiry_date[:2]), int(expiry_date[3:])
-        # Check if the month is within the valid range (1 to 12)
-        if not (1 <= expiry_month <= 12):
-            tk.messagebox.showerror("Error", "Invalid month. Please enter a month between 01 and 12.")
-            return
-        # Extract month and year from expiry date
-        expiry_month, expiry_year = int(expiry_date[:2]), int(expiry_date[3:])
-        # Get current date
-        current_date = datetime.datetime.now()
-        print(current_date)
-        current_year = current_date.year
-        current_date2 = datetime.datetime.now()
-        current_month = current_date2.month
-        
-        if expiry_month > current_month:
-            tk.messagebox.showerror("Error", "Card has expired.Maybe,month has been expired Please use a valid card.")
-            return
-        
-        # Check if the card has expired
-        
-        if expiry_year > current_year :
-            tk.messagebox.showerror("Error", "Card has expired. Please use a valid card.")
+        try:
+            expiry_month, expiry_year = map(int, expiry_date.split('/'))
+            current_month = datetime.datetime.now().month
+            current_year = datetime.datetime.now().year
+
+            if expiry_year < current_year or (expiry_year == current_year and expiry_month < current_month):
+                messagebox.showerror("Error", "Card expiry date has passed. Please use a valid card.")
+                return
+        except ValueError:
+            messagebox.showerror("Error", "Invalid expiry date format. Please enter MM/YY.")
             return
 
-        # Check if the security code is a 3-digit number
-        if not security_code.isdigit() or len(security_code) != 3:
-            tk.messagebox.showerror("Error", "Invalid security code. Please enter a 3-digit number.")
-            return
 
+            # Check if the security code is a 3-digit number
+        if not (security_code.isdigit() and len(security_code) == 3):
+            messagebox.showerror("Error", "Invalid security code. Please enter a 3-digit number.")
+            return
+        
         # If all checks pass, show payment successful message
         tk.messagebox.showinfo("Payment", f"Payment successful. Thank you for shopping! Total amount: ${total_amount:.2f}")
         # Close the payment window after successful payment
