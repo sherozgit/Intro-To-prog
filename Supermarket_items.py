@@ -73,19 +73,19 @@ def pay():
     payment_window.title("Payment")
 
     # Display total amount in payment window
-    tk.Label(payment_window, text=f"Total Amount: ${total_amount:.2f}").grid(row=3, column = 0, padx=10, pady=5)
+    tk.Label(payment_window, text=f"Total Amount: ${total_amount:.2f}").grid(row=3, column=0, padx=10, pady=5)
     
     # This takes card Number that is  16 digit number
     tk.Label(payment_window, text="Card Number:").grid(row=0, column=0, padx=10, pady=5)
     card_number_entry = tk.Entry(payment_window)
     card_number_entry.grid(row=0, column=1, padx=10, pady=5)
 
-    #This  takes secure code that is 3 digtt number 
+    # This  takes secure code that is 3 digit number 
     tk.Label(payment_window, text="Security Code:").grid(row=1, column=0, padx=10, pady=5)
     security_code_entry = tk.Entry(payment_window)
     security_code_entry.grid(row=1, column=1, padx=10, pady=5)
     
-    tk.Label(payment_window, text="Expiry Date (MM/YY):").grid(row=2, column=0, padx=10, pady=5)
+    tk.Label(payment_window, text="Expiry Date (MM/YYYY):").grid(row=2, column=0, padx=10, pady=5)
     expiry_date_entry = tk.Entry(payment_window)
     expiry_date_entry.grid(row=2, column=1, padx=10, pady=5)
     
@@ -94,15 +94,15 @@ def pay():
         card_number = card_number_entry.get()
         expiry_date = expiry_date_entry.get()
         security_code = security_code_entry.get()
+        
         # Check if the user has selected at least one item for purchase
         if not selected_items:
-            tk.messagebox.showerror("Error", "No items selected for purchase.")
+            messagebox.showerror("Error", "No items selected for purchase.")
             return
         
-
         # Check if the card number is a 16-digit number
-        if not card_number.isdigit() and len(card_number) != 16:
-            tk.messagebox.showerror("Error", "Invalid card number. Please enter a 16-digit number.")
+        if not (card_number.isdigit() and len(card_number) == 16):
+            messagebox.showerror("Error", "Invalid card number. Please enter a 16-digit number.")
             return
     
         # Check if the expiry date is valid and not expired
@@ -112,27 +112,31 @@ def pay():
             current_month = datetime.datetime.now().month
             current_year = datetime.datetime.now().year
 
+            print("Expiry Date:", expiry_month, "/", expiry_year) # this is to check whether try  except is working or not
+            print("Current Date:", current_month, "/", current_year) #This helps to see users whether their entered card date is expired or not
+
             if expiry_year < current_year or (expiry_year == current_year and expiry_month < current_month):
                 messagebox.showerror("Error", "Card expiry date has passed. Please use a valid card.")
                 return
         except ValueError:
             messagebox.showerror("Error", "Invalid expiry date format. Please enter MM/YY.")
             return
-
-
-            # Check if the security code is a 3-digit number
+        
+        # Check if the security code is a 3-digit number
         if not (security_code.isdigit() and len(security_code) == 3):
             messagebox.showerror("Error", "Invalid security code. Please enter a 3-digit number.")
             return
         
         # If all checks pass, show payment successful message
-        tk.messagebox.showinfo("Payment", f"Payment successful. Thank you for shopping! Total amount: ${total_amount:.2f}")
+        messagebox.showinfo("Payment", f"Payment successful. Thank you for shopping! Total amount: ${total_amount:.2f}")
+        
         # Close the payment window after successful payment
         payment_window.destroy()
 
     # Button to confirm payment
     confirm_btn = tk.Button(payment_window, text="Confirm Payment", command=process_payment)
     confirm_btn.grid(row=4, columnspan=2, padx=10, pady=10)
+
 # Main function to create the main window and handle user interaction
 def main():
     # Read item data from file
@@ -184,7 +188,7 @@ def show_search_window(category, items_data):
     search_window.title(f"Search {category.capitalize()}")
 
     # Set the size and position of the search window
-    window_width = 400
+    window_width = 500
     window_height = 300
     screen_width = search_window.winfo_screenwidth()
     screen_height = search_window.winfo_screenheight()
@@ -193,7 +197,7 @@ def show_search_window(category, items_data):
     search_window.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
     # Label for query entry
-    tk.Label(search_window, text=f"What are you looking for in {category.capitalize()}?",font=('Arial')).grid(row=0, column=0)
+    tk.Label(search_window, text=f"What are you looking for in {category.capitalize()}?",font=('Arial',14)).grid(row=0, column=0)
     # Entry widget for user input
     query_entry = tk.Entry(search_window)
     query_entry.grid(row=0, column=1)
