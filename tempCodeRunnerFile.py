@@ -1,1 +1,0 @@
-current_month = current_date.month
