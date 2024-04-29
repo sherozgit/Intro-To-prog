@@ -18,7 +18,35 @@ This program provides a basic simulation of supermarket shopping, allowing users
 3.List of libraries used:
 -Tkinter 
 
-4.------Instructions on how to run the program--------------:
+4.Installation Guide:
+1.Clone the Repository:
+-Open a terminal or command prompt.
+-Clone the repository to your local machine using the following command:
+bash:git clone https://github.com/sherozgit/supermarket-app.git
+-Alternatively, you can download the repository as a ZIP file from the GitHub page and extract it to a location on your computer.
+2.Install Python:
+-Ensure that Python is installed on your system. You can download Python from the official website: Python.org.
+-Follow the installation instructions provided for your operating system.
+3.Install Tkinter (if necessary):
+-Tkinter is included with most Python installations, so you may not need to install it separately.
+-If Tkinter is not installed on your system, you can install it using the following command:pip install tk
+4.Navigate to the Project Directory:
+-Open a terminal or command prompt.
+-Change your current directory to the location where you cloned or extracted the repository:
+cd supermarket-app
+5.Run the Application:
+-Execute the main.py script to launch the application:
+python main.py
+-This will open the main window of the supermarket application.
+6.Usage Instructions:
+-Follow the on-screen instructions to browse categories, search for items, select items for purchase, and complete payment.
+-Refer to the README.md file for detailed instructions on how to use the application.
+7.Exiting the Application:
+-To exit the application, click on the "Quit" button in the category selection window.
+
+
+
+5.------Instructions on how to run the program--------------:
 Running the Application: Execute the script main.py to launch the application.
 Category Selection: Click on the desired category button to browse items within that category.
 Item Search: Enter a query in the search window to find specific items within the selected category.
