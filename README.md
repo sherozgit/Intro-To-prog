@@ -22,7 +22,7 @@ This program provides a basic simulation of supermarket shopping, allowing users
 1.Clone the Repository:
 -Open a terminal or command prompt.
 -Clone the repository to your local machine using the following command:
-bash:git clone https://github.com/sherozgit/supermarket-app.git
+bash:git clone https://github.com/sherozgit/Intro-To-prog
 -Alternatively, you can download the repository as a ZIP file from the GitHub page and extract it to a location on your computer.
 2.Install Python:
 -Ensure that Python is installed on your system. You can download Python from the official website: Python.org.
